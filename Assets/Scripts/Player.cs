@@ -9,6 +9,7 @@ public class Player : MonoBehaviour {
     
     [SerializeField] float maxSpeed = 12f;
     [SerializeField] float acceleration = 1f;
+    [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
     [SerializeField] public bool isGrounded = false;
     [HideInInspector] Rigidbody2D rb;
@@ -42,7 +43,11 @@ public class Player : MonoBehaviour {
         }
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {
-            transform.Translate(new Vector2(0f, 2f));
+            // rb.AddForce(Vector3.up * jumpHeight, ForceMode2D.Force);
+            Vector2 velo = rb.velocity;
+            velo.y = jumpHeight;
+            rb.velocity = velo;
+            // transform.Translate(new Vector2(0f, jumpHeight));
         }
 
         if (Input.GetKeyDown(KeyCode.H)) {
