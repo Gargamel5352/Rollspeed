@@ -38,7 +38,7 @@ public class Movement : MonoBehaviour {
         hpbar.value = health / 100f;
         if (health <= 0)
         {
-            Scenes.deathScreen();
+            Scenes.death();
         }
     }
 }

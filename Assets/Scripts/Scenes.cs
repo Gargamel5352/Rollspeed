@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class Scenes : MonoBehaviour
 {
-    public static void deathScreen()
+    public static void death()
     {
         SceneManager.LoadScene("death");
     }
 
-    public static void gameScreen()
+    public static void gaming()
     {
         SceneManager.LoadScene("game");
     }
