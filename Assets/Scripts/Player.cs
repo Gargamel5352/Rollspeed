@@ -27,10 +27,16 @@ public class Player : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
+            Vector3 angles = wheel.transform.eulerAngles;
+            angles.z += speed / 10f;
+            wheel.transform.eulerAngles = angles;
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
             transform.Translate(new Vector3(speed * Time.deltaTime, 0));
+            Vector3 angles = wheel.transform.eulerAngles;
+            angles.z -= speed / 10f;
+            wheel.transform.eulerAngles = angles;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) {
