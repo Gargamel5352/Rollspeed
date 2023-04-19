@@ -10,10 +10,12 @@ public class Player : MonoBehaviour {
     [SerializeField] float maxSpeed = 12f;
     [SerializeField] float acceleration = 1f;
     [SerializeField] float health = 100f;
+    [SerializeField] public bool isGrounded = false;
     [HideInInspector] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
     [HideInInspector] float damageTimer = 0f; // seconds
+    [HideInInspector] int groundLayer = 3;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -39,7 +41,7 @@ public class Player : MonoBehaviour {
             wheel.transform.eulerAngles = angles;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) {
+        if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {
             transform.Translate(new Vector2(0f, 2f));
         }
 
@@ -60,6 +62,18 @@ public class Player : MonoBehaviour {
         hpbar.value = health / 100f;
         if (health <= 0) {
             Scenes.death();
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision2D) {
+        if (collision2D.gameObject.layer == groundLayer) {
+            isGrounded = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision2D) {
+        if (collision2D.gameObject.layer == groundLayer) {
+            isGrounded = false;
         }
     }
 
