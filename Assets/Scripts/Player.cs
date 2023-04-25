@@ -5,22 +5,26 @@ public class Player : MonoBehaviour {
 
     public GameObject wheel;
     public Slider hpbar;
-    public new ParticleSystem particleSystem;
-    
+    public new ParticleSystem blud;
+    public new ParticleSystem gas1;
+    public new ParticleSystem gas2;
+
     [SerializeField] float maxSpeed = 12f;
-    [SerializeField] float acceleration = 1f;
     [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
+    [SerializeField] float wheelSpeed = 10f;
     [SerializeField] public bool isGrounded = false;
     [HideInInspector] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
     [HideInInspector] float damageTimer = 0f; // seconds
     [HideInInspector] int groundLayer = 3;
+    [HideInInspector] float startTime = 0;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         health = 100f;
+        // startTime
     }
 
     void Update() {
@@ -31,23 +35,25 @@ public class Player : MonoBehaviour {
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
             Vector3 angles = wheel.transform.eulerAngles;
-            angles.z += speed / 10f;
+            angles.z += speed * (wheelSpeed * Time.deltaTime);
             wheel.transform.eulerAngles = angles;
+            transform.localScale = new Vector3(-1, 1, 1);
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
             transform.Translate(new Vector3(speed * Time.deltaTime, 0));
             Vector3 angles = wheel.transform.eulerAngles;
-            angles.z -= speed / 10f;
+            angles.z -= speed * (wheelSpeed * Time.deltaTime);
             wheel.transform.eulerAngles = angles;
+            transform.localScale = new Vector3(1, 1, 1);
         }
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {
-            // rb.AddForce(Vector3.up * jumpHeight, ForceMode2D.Force);
             Vector2 velo = rb.velocity;
             velo.y = jumpHeight;
             rb.velocity = velo;
-            // transform.Translate(new Vector2(0f, jumpHeight));
+            gas1.Play();
+            gas2.Play();
         }
 
         if (Input.GetKeyDown(KeyCode.H)) {
@@ -57,7 +63,7 @@ public class Player : MonoBehaviour {
         damageTimer = Mathf.Clamp(damageTimer - Time.deltaTime, 0, damageTimer);
         canDamage = damageTimer == 0;
         if (dmg > 0) {
-            particleSystem.Play();
+            blud.Play();
 
             health -= dmg;
             dmg = 0;
