@@ -1,33 +1,39 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Player : MonoBehaviour {
 
     public GameObject wheel;
     public Slider hpbar;
-    public new ParticleSystem blud;
-    public new ParticleSystem gas1;
-    public new ParticleSystem gas2;
+    public ParticleSystem blud;
+    public ParticleSystem gas1;
+    public ParticleSystem gas2;
+    public Text timer;
+    public Text fpsCounter;
+    public GameObject debugObject;
 
     [SerializeField] float maxSpeed = 12f;
     [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
     [SerializeField] float wheelSpeed = 10f;
     [SerializeField] public bool isGrounded = false;
+    [SerializeField] public bool debugEnabled = false;
     [HideInInspector] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
     [HideInInspector] float damageTimer = 0f; // seconds
     [HideInInspector] int groundLayer = 3;
-    [HideInInspector] float startTime = 0;
+    [HideInInspector] long startTime = 0;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         health = 100f;
-        // startTime
+        startTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
     }
 
     void Update() {
+        /* Movement */
         float speedmod = 100f / health;
         float _maxSpeed = maxSpeed * speedmod;
         float speed = maxSpeed * speedmod;
@@ -56,10 +62,7 @@ public class Player : MonoBehaviour {
             gas2.Play();
         }
 
-        if (Input.GetKeyDown(KeyCode.H)) {
-            health -= 5f;
-        }
-
+        /* Health & Health Bar */
         damageTimer = Mathf.Clamp(damageTimer - Time.deltaTime, 0, damageTimer);
         canDamage = damageTimer == 0;
         if (dmg > 0) {
@@ -74,6 +77,32 @@ public class Player : MonoBehaviour {
         if (health <= 0) {
             Scenes.death();
         }
+        
+        /* Timer */
+        long diffLong = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds() - startTime;
+        float diff = Convert.ToSingle(diffLong) / 1000;
+
+        timer.text = $"{diff:F2}s";
+
+        /* Y level check */
+        if (gameObject.transform.position.y <= -10) {
+            Scenes.death();
+        }
+
+        /* Debug */
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D)) {
+            debugEnabled = !debugEnabled;
+        }
+
+        if (debugEnabled) {
+            if (Input.GetKeyDown(KeyCode.H)) {
+                health -= 5f;
+            }
+
+            fpsCounter.text = $"{Math.Round(1f / Time.deltaTime)} FPS";
+        }
+
+        debugObject.SetActive(debugEnabled);
     }
 
     void OnCollisionEnter2D(Collision2D collision2D) {
