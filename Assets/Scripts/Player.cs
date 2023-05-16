@@ -36,20 +36,20 @@ public class Player : MonoBehaviour {
         /* Movement */
         float speedmod = 100f / health;
         float _maxSpeed = maxSpeed * speedmod;
-        float speed = maxSpeed * speedmod;
+        float speed = maxSpeed * speedmod * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-            transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
+            transform.Translate(new Vector3(-speed, 0));
             Vector3 angles = wheel.transform.eulerAngles;
-            angles.z += speed * (wheelSpeed * Time.deltaTime);
+            angles.z += speed * wheelSpeed;
             wheel.transform.eulerAngles = angles;
             transform.localScale = new Vector3(-1, 1, 1);
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-            transform.Translate(new Vector3(speed * Time.deltaTime, 0));
+            transform.Translate(new Vector3(speed, 0));
             Vector3 angles = wheel.transform.eulerAngles;
-            angles.z -= speed * (wheelSpeed * Time.deltaTime);
+            angles.z -= speed * wheelSpeed;
             wheel.transform.eulerAngles = angles;
             transform.localScale = new Vector3(1, 1, 1);
         }
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour {
 
         /* Health & Health Bar */
         damageTimer = Mathf.Clamp(damageTimer - Time.deltaTime, 0, damageTimer);
-        canDamage = damageTimer == 0;
+        canDamage = damageTimer <= 0;
         if (dmg > 0) {
             blud.Play();
 
