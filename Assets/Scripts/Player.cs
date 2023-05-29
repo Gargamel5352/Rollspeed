@@ -12,6 +12,9 @@ public class Player : MonoBehaviour {
     public Text timer;
     public Text fpsCounter;
     public GameObject debugObject;
+    public AudioClip movementSound;
+    public AudioClip deathSound;
+    public AudioClip damageSound;
 
     [SerializeField] float maxSpeed = 12f;
     [SerializeField] float jumpHeight = 6f;
@@ -25,9 +28,11 @@ public class Player : MonoBehaviour {
     [HideInInspector] float damageTimer = 0f; // seconds
     [HideInInspector] int groundLayer = 3;
     [HideInInspector] long startTime = 0;
+    [HideInInspector] AudioSource audioSource;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
         health = 100f;
         startTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
     }
@@ -54,6 +59,10 @@ public class Player : MonoBehaviour {
             transform.localScale = new Vector3(1, 1, 1);
         }
 
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+            audioSource.PlayOneShot(movementSound); // Play movement sound (no way)
+        }
+
         if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {
             Vector2 velo = rb.velocity;
             velo.y = jumpHeight;
@@ -67,6 +76,7 @@ public class Player : MonoBehaviour {
         canDamage = damageTimer <= 0;
         if (dmg > 0) {
             blud.Play();
+            audioSource.PlayOneShot(damageSound);
 
             health -= dmg;
             dmg = 0;
@@ -76,6 +86,7 @@ public class Player : MonoBehaviour {
         hpbar.value = health / 100f;
         if (health <= 0) {
             Scenes.death();
+            audioSource.PlayOneShot(deathSound);
         }
         
         /* Timer */
@@ -87,6 +98,7 @@ public class Player : MonoBehaviour {
         /* Y level check */
         if (gameObject.transform.position.y <= -10) {
             Scenes.death();
+            audioSource.PlayOneShot(deathSound);
         }
 
         /* Debug */
