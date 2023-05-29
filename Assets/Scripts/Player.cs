@@ -13,7 +13,6 @@ public class Player : MonoBehaviour {
     public Text fpsCounter;
     public GameObject debugObject;
     public AudioClip movementSound;
-    public AudioClip deathSound;
     public AudioClip damageSound;
 
     [SerializeField] float maxSpeed = 12f;
@@ -86,7 +85,6 @@ public class Player : MonoBehaviour {
         hpbar.value = health / 100f;
         if (health <= 0) {
             Scenes.death();
-            audioSource.PlayOneShot(deathSound);
         }
         
         /* Timer */
@@ -98,7 +96,6 @@ public class Player : MonoBehaviour {
         /* Y level check */
         if (gameObject.transform.position.y <= -10) {
             Scenes.death();
-            audioSource.PlayOneShot(deathSound);
         }
 
         /* Debug */
