@@ -18,7 +18,6 @@ public class IpInfoResponse {
 }
 
 public class Player : MonoBehaviour {
-
     public GameObject wheel;
     public Slider hpbar;
     public GameObject blud;
@@ -28,32 +27,29 @@ public class Player : MonoBehaviour {
     public Text fpsCounter;
     public Text ipText;
     public GameObject debugObject;
-    public AudioClip movementSound;
-    public AudioClip damageSound;
+    public AudioSource movementSound;
+    public AudioSource damageSound;
 
     [SerializeField] float maxSpeed = 12f;
     [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
     [SerializeField] float wheelSpeed = 10f;
-    [SerializeField] float ipUpdate = 3f; // seconds
+    [SerializeField] float ipUpdate = 2f; // seconds
     [SerializeField] public bool isGrounded = false;
-    [SerializeField] public bool debugEnabled = false;
     [HideInInspector] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
     [HideInInspector] float damageTimer = 0f; // seconds
     [HideInInspector] int groundLayer = 3;
     [HideInInspector] long startTime = 0;
-    [HideInInspector] AudioSource audioSource;
     [HideInInspector] string userIp = null;
     [HideInInspector] System.Random random = new System.Random();
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
         health = 100f;
         startTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
-        StartCoroutine(GetIP());
+        // StartCoroutine(GetIP());
     }
 
     IEnumerator GetIP() {
@@ -71,9 +67,15 @@ public class Player : MonoBehaviour {
     }
 
     public string RandomString(int length) {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
+        const string chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ";
+        return new string(
+            Enumerable
+                .Repeat(chars, length)
+                .Select(
+                    s => s[random.Next(s.Length)]
+                )
+                .ToArray()
+        );
     }
 
     void Update() {
@@ -98,8 +100,8 @@ public class Player : MonoBehaviour {
             transform.localScale = new Vector3(1, 1, 1);
         }
 
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-            audioSource.PlayOneShot(movementSound); // Play movement sound (no way)
+        if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && !movementSound.isPlaying) {
+            movementSound.Play(); // Play movement sound (no way)
         }
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {
@@ -115,7 +117,7 @@ public class Player : MonoBehaviour {
         canDamage = damageTimer <= 0;
         if (dmg > 0) {
             Instantiate(blud, transform.position + new Vector3(0, -2.9f, -10), Quaternion.identity);
-            audioSource.PlayOneShot(damageSound);
+            damageSound.Play();
 
             health -= dmg;
             dmg = 0;
@@ -136,9 +138,6 @@ public class Player : MonoBehaviour {
         /* Nice IP bozo */
         if (userIp != null) {
             int shown = (int) Math.Floor(diff / ipUpdate);
-            Debug.Log($"shown {shown}");
-            Debug.Log($"div {Math.Floor(diff / ipUpdate)}");
-            Debug.Log($"update {ipUpdate}");
 
             if (shown > userIp.Length) {
                 ipText.color = ((int) diff) % 2 == 0 ? new Color(1, 0, 0) : new Color(1, 1, 1);
@@ -164,19 +163,14 @@ public class Player : MonoBehaviour {
         }
 
         /* Debug */
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.D)) {
-            debugEnabled = !debugEnabled;
-        }
-
-        if (debugEnabled) {
+        #if DEBUG
             if (Input.GetKeyDown(KeyCode.H)) {
                 health -= 5f;
             }
 
             fpsCounter.text = $"{Math.Round(1f / Time.deltaTime)} FPS";
-        }
-
-        debugObject.SetActive(debugEnabled);
+            debugObject.SetActive(true);
+        #endif
     }
 
     void OnCollisionEnter2D(Collision2D collision2D) {
