@@ -1408,7 +1408,7 @@ MonoBehaviour:
   jumpHeight: 15
   health: 100
   wheelSpeed: 50
-  ipUpdate: 2
+  ipUpdate: 1
   isGrounded: 0
 --- !u!82 &455552332
 AudioSource:

@@ -15,6 +15,9 @@ public class Scenes : MonoBehaviour {
     }
 
     public static void death() => SceneManager.LoadScene("death");
-    public static void gaming() => SceneManager.LoadScene("game");
+    // public static void gaming() => SceneManager.LoadScene("game");
+    public static void gaming() => SceneManager.LoadScene("level2");
     public static void main() => SceneManager.LoadScene("mainmenu");
+
+    public static void changeScene(string name) => SceneManager.LoadScene(name);
 }

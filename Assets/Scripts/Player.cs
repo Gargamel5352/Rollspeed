@@ -34,7 +34,7 @@ public class Player : MonoBehaviour {
     [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
     [SerializeField] float wheelSpeed = 10f;
-    [SerializeField] float ipUpdate = 2f; // seconds
+    [SerializeField] float ipUpdate = 1f; // seconds
     [SerializeField] public bool isGrounded = false;
     [HideInInspector] Rigidbody2D rb;
     [HideInInspector] static float dmg;
@@ -49,7 +49,9 @@ public class Player : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         health = 100f;
         startTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
-        // StartCoroutine(GetIP());
+        if (PlayerPrefs.GetInt("HardMode", 0) == 1) {
+            StartCoroutine(GetIP());
+        }
     }
 
     IEnumerator GetIP() {
