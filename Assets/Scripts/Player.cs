@@ -85,25 +85,27 @@ public class Player : MonoBehaviour {
         float speedmod = 100f / health;
         float _maxSpeed = maxSpeed * speedmod;
         float speed = maxSpeed * speedmod * Time.deltaTime;
+        bool isMoving = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        Vector3 angles = wheel.transform.eulerAngles;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
             transform.Translate(new Vector3(-speed, 0));
-            Vector3 angles = wheel.transform.eulerAngles;
             angles.z += speed * wheelSpeed;
-            wheel.transform.eulerAngles = angles;
             transform.localScale = new Vector3(-1, 1, 1);
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
             transform.Translate(new Vector3(speed, 0));
-            Vector3 angles = wheel.transform.eulerAngles;
             angles.z -= speed * wheelSpeed;
-            wheel.transform.eulerAngles = angles;
             transform.localScale = new Vector3(1, 1, 1);
         }
 
-        if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && !movementSound.isPlaying) {
-            movementSound.Play(); // Play movement sound (no way)
+        if (isMoving) {
+            wheel.transform.eulerAngles = angles;
+
+            if (!movementSound.isPlaying) {
+                movementSound.Play(); // Play movement sound (no way)
+            }
         }
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow))) {

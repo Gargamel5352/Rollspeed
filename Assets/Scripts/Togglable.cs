@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class Togglable : MonoBehaviour {
+public class Togglable : MonoBehaviour { // best code fr
     public Text toggler;
 
     [SerializeField] private bool toggled = false;
