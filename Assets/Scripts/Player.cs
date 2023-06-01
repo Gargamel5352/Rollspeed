@@ -85,22 +85,22 @@ public class Player : MonoBehaviour {
         float speedmod = 100f / health;
         float _maxSpeed = maxSpeed * speedmod;
         float speed = maxSpeed * speedmod * Time.deltaTime;
-        bool isMoving = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
-        Vector3 angles = wheel.transform.eulerAngles;
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
-            transform.Translate(new Vector3(-speed, 0));
-            angles.z += speed * wheelSpeed;
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+            Vector3 angles = wheel.transform.eulerAngles;
 
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
-            transform.Translate(new Vector3(speed, 0));
-            angles.z -= speed * wheelSpeed;
-            transform.localScale = new Vector3(1, 1, 1);
-        }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+                transform.Translate(new Vector3(-speed, 0));
+                angles.z += speed * wheelSpeed;
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
 
-        if (isMoving) {
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+                transform.Translate(new Vector3(speed, 0));
+                angles.z -= speed * wheelSpeed;
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+
             wheel.transform.eulerAngles = angles;
 
             if (!movementSound.isPlaying) {
@@ -150,7 +150,7 @@ public class Player : MonoBehaviour {
                 }
                 shown = userIp.Length;
             }
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
             for (int i = 0; i < shown; i++) {
                 builder.Append(userIp.ElementAt(i));
