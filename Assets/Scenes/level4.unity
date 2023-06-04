@@ -501,14 +501,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wheel: {fileID: 700759806}
-  hpbar: {fileID: 0}
   blud: {fileID: 5915584532604941908, guid: 05a7f11308f77c146af83a8b5fc314c2, type: 3}
   gas1: {fileID: 1756771559}
   gas2: {fileID: 995723192}
-  timer: {fileID: 0}
-  fpsCounter: {fileID: 0}
   ipText: {fileID: 184711604}
-  debugObject: {fileID: 0}
   movementSound: {fileID: 455552332}
   damageSound: {fileID: 455552333}
   maxSpeed: 12
@@ -517,6 +513,12 @@ MonoBehaviour:
   wheelSpeed: 50
   ipUpdate: 1
   isGrounded: 0
+  damageTimer: 0
+  hpbar: {fileID: 0}
+  timer: {fileID: 0}
+  fpsCounter: {fileID: 0}
+  debugObject: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!82 &455552332
 AudioSource:
   m_ObjectHideFlags: 0
@@ -761,7 +763,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
-  m_Antialiasing: 2
+  m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
