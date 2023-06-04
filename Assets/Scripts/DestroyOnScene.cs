@@ -11,6 +11,7 @@ public class DestroyOnScene : MonoBehaviour {
     void OnSceneChange(Scene scene, LoadSceneMode _) {
         if (scenes.Contains(scene.name)) {
             Destroy(gameObject);
+            SceneManager.sceneLoaded -= OnSceneChange;
         }
     }
 }
