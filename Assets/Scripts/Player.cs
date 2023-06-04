@@ -19,14 +19,10 @@ public class IpInfoResponse {
 
 public class Player : MonoBehaviour {
     public GameObject wheel;
-    public Slider hpbar;
     public GameObject blud;
     public ParticleSystem gas1;
     public ParticleSystem gas2;
-    public Text timer;
-    public Text fpsCounter;
     public Text ipText;
-    public GameObject debugObject;
     public AudioSource movementSound;
     public AudioSource damageSound;
 
@@ -36,15 +32,25 @@ public class Player : MonoBehaviour {
     [SerializeField] float wheelSpeed = 10f;
     [SerializeField] float ipUpdate = 1f; // seconds
     [SerializeField] public bool isGrounded = false;
-    [HideInInspector] Rigidbody2D rb;
+    [SerializeField] float damageTimer = 0f; // seconds
+    [SerializeField] Slider hpbar;
+    [SerializeField] Text timer;
+    [SerializeField] Text fpsCounter;
+    [SerializeField] GameObject debugObject;
+    [SerializeField] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
-    [HideInInspector] float damageTimer = 0f; // seconds
     [HideInInspector] int groundLayer = 3;
     [HideInInspector] long startTime = 0;
     [HideInInspector] string userIp = null;
     [HideInInspector] System.Random random = new System.Random();
 
+    private void Start() {
+        hpbar = GameObject.FindWithTag("health").GetComponent<Slider>();
+        timer = GameObject.FindWithTag("timer").GetComponent<Text>();
+        fpsCounter = GameObject.FindWithTag("fps").GetComponent<Text>();
+        debugObject = GameObject.FindWithTag("debug");
+    }
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         health = 100f;
@@ -60,7 +66,7 @@ public class Player : MonoBehaviour {
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success) {
-            Debug.Log(www.error);
+            Debug.LogError($"Error: www.error");
         } else {
             IpInfoResponse resp = JsonUtility.FromJson<IpInfoResponse>(www.downloadHandler.text);
 
@@ -117,7 +123,7 @@ public class Player : MonoBehaviour {
         }
 
         /* Health & Health Bar */
-        damageTimer = Mathf.Clamp(damageTimer - Time.deltaTime, 0, damageTimer);
+        damageTimer -= Time.deltaTime;
         canDamage = damageTimer <= 0;
         if (dmg > 0) {
             Instantiate(blud, transform.position + new Vector3(0, -2.9f, -10), Quaternion.identity);
@@ -125,12 +131,12 @@ public class Player : MonoBehaviour {
 
             health -= dmg;
             dmg = 0;
-            damageTimer += 0.5f;
+            damageTimer = 0.5f;
         }
 
         hpbar.value = health / 100f;
         if (health <= 0) {
-            Scenes.death();
+            Scenes.Death();
         }
         
         /* Timer */
@@ -146,7 +152,7 @@ public class Player : MonoBehaviour {
             if (shown > userIp.Length) {
                 ipText.color = ((int) diff) % 2 == 0 ? new Color(1, 0, 0) : new Color(1, 1, 1);
                 if (shown - userIp.Length >= (int) Math.Ceiling(10f / ipUpdate)) {
-                    Scenes.death();
+                    Scenes.Death();
                 }
                 shown = userIp.Length;
             }
@@ -163,7 +169,7 @@ public class Player : MonoBehaviour {
 
         /* Y level check */
         if (gameObject.transform.position.y <= -10) {
-            Scenes.death();
+            Scenes.Death();
         }
 
         /* Debug */
