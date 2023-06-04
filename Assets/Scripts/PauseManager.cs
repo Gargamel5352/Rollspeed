@@ -20,20 +20,19 @@ public class PauseManager : MonoBehaviour {
 
     public void Resume() {
         changeMenu(0);
-        Cursor.lockState = CursorLockMode.Locked;
         isPaused = false;
         Time.timeScale = 1f;
     }
 
     public void Pause() {
         changeMenu(1);
-        Cursor.lockState = CursorLockMode.None;
         isPaused = true;
         Time.timeScale = 0f;
     }
 
     public void changeMenu(int menuID) {
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         isPaused = true;
         Time.timeScale = 0f;
 
@@ -41,6 +40,8 @@ public class PauseManager : MonoBehaviour {
         // Pause = 1
         // Settings = 2
         if (menuID == 0) {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             mainUI.SetActive(true);
             pauseUI.SetActive(false);
             settingsUI.SetActive(false);
