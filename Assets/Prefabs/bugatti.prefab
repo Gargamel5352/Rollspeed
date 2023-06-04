@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b47fc3b64629fa84ab6070438368256b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anglePerSecond: -500
+  anglePerSecond: -720
 --- !u!1 &1776616690459845170
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,4 +330,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b47fc3b64629fa84ab6070438368256b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anglePerSecond: -500
+  anglePerSecond: -720

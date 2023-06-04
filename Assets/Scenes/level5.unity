@@ -758,13 +758,9 @@ MonoBehaviour:
   jumpHeight: 15
   health: 100
   wheelSpeed: 50
-  ipUpdate: 1
+  ipUpdate: 3
   isGrounded: 0
   damageTimer: 0
-  hpbar: {fileID: 0}
-  timer: {fileID: 0}
-  fpsCounter: {fileID: 0}
-  debugObject: {fileID: 0}
   rb: {fileID: 0}
 --- !u!82 &455552332
 AudioSource:

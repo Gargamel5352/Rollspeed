@@ -30,31 +30,22 @@ public class Player : MonoBehaviour {
     [SerializeField] float jumpHeight = 6f;
     [SerializeField] float health = 100f;
     [SerializeField] float wheelSpeed = 10f;
-    [SerializeField] float ipUpdate = 1f; // seconds
+    [SerializeField] float ipUpdate = 3f; // seconds
     [SerializeField] public bool isGrounded = false;
     [SerializeField] float damageTimer = 0f; // seconds
+    [SerializeField] Rigidbody2D rb;
     [SerializeField] Slider hpbar;
     [SerializeField] Text timer;
-    [SerializeField] Text fpsCounter;
-    [SerializeField] GameObject debugObject;
-    [SerializeField] Rigidbody2D rb;
     [HideInInspector] static float dmg;
     [HideInInspector] static bool canDamage = false;
     [HideInInspector] int groundLayer = 3;
-    [HideInInspector] long startTime = 0;
-    [HideInInspector] string userIp = null;
     [HideInInspector] System.Random random = new System.Random();
 
-    private void Start() {
-        hpbar = GameObject.FindWithTag("health").GetComponent<Slider>();
-        timer = GameObject.FindWithTag("timer").GetComponent<Text>();
-        fpsCounter = GameObject.FindWithTag("fps").GetComponent<Text>();
-        debugObject = GameObject.FindWithTag("debug");
-    }
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
+        hpbar = GameObject.FindWithTag("health").GetComponent<Slider>();
+        timer = GameObject.FindWithTag("timer").GetComponent<Text>();
         health = 100f;
-        startTime = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
         if (PlayerPrefs.GetInt("HardMode", 0) == 1) {
             StartCoroutine(GetIP());
         }
@@ -70,7 +61,7 @@ public class Player : MonoBehaviour {
         } else {
             IpInfoResponse resp = JsonUtility.FromJson<IpInfoResponse>(www.downloadHandler.text);
 
-            userIp = resp.ip;
+            Manager.Instance.userIp = resp.ip;
         }
     }
 
@@ -140,17 +131,17 @@ public class Player : MonoBehaviour {
         }
         
         /* Timer */
-        long diffLong = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds() - startTime;
-        float diff = Convert.ToSingle(diffLong) / 1000;
-
-        timer.text = $"{diff:F2}s";
+        Manager.Instance.playTime += Time.deltaTime;
+        float playTime = Manager.Instance.playTime;
+        timer.text = $"{playTime:F2}s";
 
         /* Nice IP bozo */
-        if (userIp != null) {
-            int shown = (int) Math.Floor(diff / ipUpdate);
+        if (Manager.Instance.userIp != null) {
+            string userIp = Manager.Instance.userIp;
+            int shown = (int) Math.Floor(playTime / ipUpdate);
 
             if (shown > userIp.Length) {
-                ipText.color = ((int) diff) % 2 == 0 ? new Color(1, 0, 0) : new Color(1, 1, 1);
+                ipText.color = ((int) playTime) % 2 == 0 ? new Color(1, 0, 0) : new Color(1, 1, 1);
                 if (shown - userIp.Length >= (int) Math.Ceiling(10f / ipUpdate)) {
                     Scenes.Death();
                 }
@@ -171,16 +162,6 @@ public class Player : MonoBehaviour {
         if (gameObject.transform.position.y <= -10) {
             Scenes.Death();
         }
-
-        /* Debug */
-        #if DEBUG
-            if (Input.GetKeyDown(KeyCode.H)) {
-                health -= 5f;
-            }
-
-            fpsCounter.text = $"{Math.Round(1f / Time.deltaTime)} FPS";
-            debugObject.SetActive(true);
-        #endif
     }
 
     void OnCollisionEnter2D(Collision2D collision2D) {
