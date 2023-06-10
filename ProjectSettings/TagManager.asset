@@ -10,6 +10,7 @@ TagManager:
   - debug
   - health
   - level manager
+  - Player1
   layers:
   - Default
   - TransparentFX

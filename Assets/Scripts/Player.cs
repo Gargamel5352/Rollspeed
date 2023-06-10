@@ -26,9 +26,9 @@ public class Player : MonoBehaviour {
     public AudioSource movementSound;
     public AudioSource damageSound;
 
-    [SerializeField] float maxSpeed = 12f;
+    [SerializeField] float maxSpeed = 6f;
     [SerializeField] float jumpHeight = 6f;
-    [SerializeField] float health = 100f;
+    public float health = 100f;
     [SerializeField] float wheelSpeed = 10f;
     [SerializeField] float ipUpdate = 3f; // seconds
     [SerializeField] public bool isGrounded = false;
@@ -129,6 +129,10 @@ public class Player : MonoBehaviour {
         if (health <= 0) {
             Scenes.Death();
         }
+        if (health > 100)
+        {
+            health = 100;
+        }
         
         /* Timer */
         Manager.Instance.playTime += Time.deltaTime;
@@ -182,4 +186,5 @@ public class Player : MonoBehaviour {
             dmg = damage;
         }
     }
+    
 }
